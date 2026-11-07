@@ -12,5 +12,7 @@
 <key>LSUIElement</key><true/>
 <key>NSHighResolutionCapable</key><true/>
 <key>CFBundleIconFile</key><string>AppIcon</string>
-<key>NSAccessibilityUsageDescription</key><string>Curtain отслеживает положение выбранных окон, чтобы шторы двигались вместе с ними.</string>
+<key>CFBundleDevelopmentRegion</key><string>en</string>
+<key>CFBundleLocalizations</key><array><string>en</string><string>ru</string></array>
+<key>NSAccessibilityUsageDescription</key><string>Curtain follows the position of selected windows so the curtains move with them.</string>
 </dict></plist>

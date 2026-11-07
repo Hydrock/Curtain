@@ -5,13 +5,13 @@ final class WelcomeView: NSView {
     override func draw(_ dirtyRect: NSRect) {
         NSColor(calibratedRed:0.955,green:0.94,blue:0.90,alpha:1).setFill(); bounds.fill()
         text("C U R T A I N", at:CGPoint(x:40,y:36), size:12, color:ink, weight:.semibold)
-        text("У каждого окна\nесть своя штора.", at:CGPoint(x:40,y:98), size:38, color:ink, weight:.regular)
-        text("Маленький театр на вашем Mac.", at:CGPoint(x:42,y:208), size:16, color:ink)
-        text("Потяните за ткань — она последует за рукой.\nОтпустите — складки мягко успокоятся.", at:CGPoint(x:42,y:249), size:13, color:ink.withAlphaComponent(0.65))
-        text("01   Хватайте за любой участок", at:CGPoint(x:42,y:333), size:12, color:ink)
-        text("02   Тяните к краю, чтобы открыть", at:CGPoint(x:42,y:361), size:12, color:ink)
-        text("03   Двойной щелчок — открыть / закрыть", at:CGPoint(x:42,y:389), size:12, color:ink)
-        text("Выбор окон и управление — в строке меню ↗", at:CGPoint(x:42,y:518), size:11, color:ink.withAlphaComponent(0.55))
+        text(L("Every window\nneeds a curtain.", "У каждого окна\nесть своя штора."), at:CGPoint(x:40,y:98), size:38, color:ink, weight:.regular)
+        text(L("A little theatre on your Mac.", "Маленький театр на вашем Mac."), at:CGPoint(x:42,y:208), size:16, color:ink)
+        text(L("Pull the fabric and it follows your hand.\nLet go and the folds gently settle.", "Потяните за ткань — она последует за рукой.\nОтпустите — складки мягко успокоятся."), at:CGPoint(x:42,y:249), size:13, color:ink.withAlphaComponent(0.65))
+        text(L("01   Grab any part of the fabric", "01   Хватайте за любой участок"), at:CGPoint(x:42,y:333), size:12, color:ink)
+        text(L("02   Pull toward the edge to open", "02   Тяните к краю, чтобы открыть"), at:CGPoint(x:42,y:361), size:12, color:ink)
+        text(L("03   Double-click to open / close", "03   Двойной щелчок — открыть / закрыть"), at:CGPoint(x:42,y:389), size:12, color:ink)
+        text(L("Window selection and controls are in the menu bar ↗", "Выбор окон и управление — в строке меню ↗"), at:CGPoint(x:42,y:518), size:11, color:ink.withAlphaComponent(0.55))
         let card = NSRect(x:472,y:88,width:240,height:330)
         NSColor(calibratedRed:0.89,green:0.86,blue:0.80,alpha:1).setFill()
         NSBezierPath(roundedRect:card,xRadius:110,yRadius:110).fill()
@@ -31,7 +31,7 @@ final class WelcomeView: NSView {
             }
         }
         NSGraphicsContext.restoreGraphicsState()
-        text("ПРИДУМАНО ВО СНЕ",at:CGPoint(x:515,y:450),size:10,color:ink.withAlphaComponent(0.5),weight:.medium)
+        text(L("DREAMED INTO EXISTENCE", "ПРИДУМАНО ВО СНЕ"),at:CGPoint(x:515,y:450),size:10,color:ink.withAlphaComponent(0.5),weight:.medium)
     }
     private var ink: NSColor { NSColor(calibratedRed:0.20,green:0.25,blue:0.23,alpha:1) }
     private func text(_ string:String, at point:CGPoint, size:CGFloat, color:NSColor, weight:NSFont.Weight = .regular) {
@@ -50,8 +50,8 @@ final class DemoView: NSView {
         func label(_ text:String, y:CGFloat, size:CGFloat, alpha:CGFloat = 1) {
             (text as NSString).draw(in:NSRect(x:35,y:y,width:bounds.width-70,height:120),withAttributes:[.font:NSFont.systemFont(ofSize:size,weight:.regular),.foregroundColor:NSColor(calibratedRed:0.21,green:0.29,blue:0.27,alpha:alpha),.paragraphStyle:paragraph])
         }
-        label("Немного тишины.",y:205,size:36)
-        label("За этой шторой — ваше окно.",y:266,size:16,alpha:0.65)
-        label("Тяните ткань к краям, чтобы открыть.\nДвойной щелчок по шторе — закрыть.\nПравый щелчок — меню управления.",y:330,size:13,alpha:0.6)
+        label(L("A little quiet.", "Немного тишины."),y:205,size:36)
+        label(L("Your window is behind this curtain.", "За этой шторой — ваше окно."),y:266,size:16,alpha:0.65)
+        label(L("Pull the fabric toward the edges to open.\nDouble-click a curtain to close it.\nRight-click for controls.", "Тяните ткань к краям, чтобы открыть.\nДвойной щелчок по шторе — закрыть.\nПравый щелчок — меню управления."),y:330,size:13,alpha:0.6)
     }
 }

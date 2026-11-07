@@ -3,7 +3,7 @@
 macOS 27.0.1, Apple Silicon, Swift 6.4; целевая система macOS 14+.
 
 - `build.sh`: успешная сборка без предупреждений.
-- `test.sh`: все четыре набора тестов прошли в графической сессии macOS.
+- `test.sh`: все пять наборов тестов прошли в графической сессии macOS.
 - Физика: открытие обеих штор, передача деформации соседям, отпускание,
   затухание, изменение размера, экстремальные координаты захвата.
 - AppKit: видимость демо без фокуса, порядок окон, свободный заголовок,
@@ -30,3 +30,12 @@ macOS 27.0.1, Apple Silicon, Swift 6.4; целевая система macOS 14+.
 - Release archive checksum verified with `shasum -a 256 -c SHA256SUMS.txt`.
 - Native AppKit documentation rendering and animation generated using Tools/Demo.
 - Release builds remain ad hoc signed, not notarized.
+
+## v1.1.0 localization
+
+- English defaults independently of the macOS language. English and Russian are persisted.
+- Language switches live from the welcome picker and menu; existing windows refresh.
+- All five test groups and the headless CI subset passed, including default language,
+  invalid preference fallback, notifications, persistence and translated slider labels.
+- Live UI inspection confirmed English → Russian → English without restart and correct layout.
+- PNG, GIF and MP4 were regenerated in English from the native AppKit views.

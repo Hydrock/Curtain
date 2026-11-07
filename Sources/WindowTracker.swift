@@ -92,8 +92,8 @@ func availableWindows() -> [WindowTarget] {
         for window in windows {
             AXUIElementSetMessagingTimeout(window, 0.15)
             guard windowRect(window) != nil else { continue }
-            let title = attribute(window, kAXTitleAttribute) as? String ?? "Окно"
-            result.append(WindowTarget(element:window, pid:app.processIdentifier, title:title.isEmpty ? "Без названия" : title, appName:app.localizedName ?? "Приложение"))
+            let title = attribute(window, kAXTitleAttribute) as? String ?? L("Window", "Окно")
+            result.append(WindowTarget(element:window, pid:app.processIdentifier, title:title.isEmpty ? L("Untitled", "Без названия") : title, appName:app.localizedName ?? L("Application", "Приложение")))
         }
     }
     return result.sorted { ($0.appName, $0.title) < ($1.appName, $1.title) }

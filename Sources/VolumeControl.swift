@@ -15,13 +15,13 @@ final class VolumeControl: NSView {
         slider.frame = NSRect(x: 18, y: 11, width: 224, height: 22)
         slider.isContinuous = true
         slider.target = self; slider.action = #selector(changed)
-        slider.setAccessibilityLabel("Громкость звука штор")
-        slider.toolTip = "0% — без звука, 100% — максимальная громкость"
+        slider.setAccessibilityLabel(L("Curtain sound volume", "Громкость звука штор"))
+        slider.toolTip = L("0% — silent, 100% — maximum volume", "0% — без звука, 100% — максимальная громкость")
         addSubview(label); addSubview(slider)
         updateLabel(value)
     }
     required init?(coder: NSCoder) { fatalError() }
-    private func updateLabel(_ value: Int) { label.stringValue = "Громкость: \(value)%" }
+    private func updateLabel(_ value: Int) { label.stringValue = L("Volume", "Громкость") + ": \(value)%" }
     @objc private func changed() {
         let value = slider.integerValue
         updateLabel(value)

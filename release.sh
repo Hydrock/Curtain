@@ -27,6 +27,6 @@ Native curtains for macOS windows, with cloth physics, transparency and sound co
   Developer ID signing and Apple notarization are not configured for these releases.
 - SHA256SUMS.txt contains the archive checksum.
 
-The interface is currently in Russian. See the README for English instructions.
+English is the default. Choose Language → English / Русский to switch without restarting.
 NOTES
 print "Release archive: build/releases/$release_archive"

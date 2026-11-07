@@ -2,6 +2,7 @@
 // Run from the project root. Requires a graphical macOS session.
 import AppKit
 let app = NSApplication.shared
+Localization.shared.language = .english
 let width = 900, height = 620, titleHeight: CGFloat = 38
 let demo = DemoView(frame: NSRect(x:0,y:0,width:width,height:height-Int(titleHeight)))
 let fabric = FabricView(frame: demo.frame)
@@ -20,7 +21,7 @@ func render() -> Data {
     for (x,color) in [(CGFloat(18),NSColor.systemRed),(CGFloat(40),NSColor.systemYellow),(CGFloat(62),NSColor.systemGreen)] {
         color.setFill(); NSBezierPath(ovalIn:NSRect(x:x,y:12,width:13,height:13)).fill()
     }
-    ("Curtain · потяните за ткань" as NSString).draw(at:CGPoint(x:94,y:10),withAttributes:[.font:NSFont.systemFont(ofSize:14,weight:.semibold),.foregroundColor:NSColor.darkGray])
+    (L("Curtain · pull the fabric", "Curtain · потяните за ткань") as NSString).draw(at:CGPoint(x:94,y:10),withAttributes:[.font:NSFont.systemFont(ofSize:14,weight:.semibold),.foregroundColor:NSColor.darkGray])
     ctx.translateBy(x:0,y:titleHeight)
     demo.draw(demo.bounds)
     // Transparent panels are composited over the demo; clearing the fabric's

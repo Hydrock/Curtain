@@ -133,7 +133,7 @@ final class FabricView: NSView {
     }
     override func rightMouseDown(with event: NSEvent) {
         let menu = NSMenu()
-        for (title, action) in [("Открыть шторы", #selector(openCurtains)), ("Закрыть шторы", #selector(closeCurtains)), ("Снять шторы", #selector(removeCurtains))] {
+        for (title, action) in [(L("Open curtains", "Открыть шторы"), #selector(openCurtains)), (L("Close curtains", "Закрыть шторы"), #selector(closeCurtains)), (L("Remove curtains", "Снять шторы"), #selector(removeCurtains))] {
             let item = menu.addItem(withTitle: title, action: action, keyEquivalent: ""); item.target = self
         }
         NSMenu.popUpContextMenu(menu, with:event, for:self)

@@ -4,7 +4,7 @@
 
 Interactive curtains for real macOS windows. A native Swift and AppKit menu bar app with no third-party dependencies. Requires macOS 14 or later, on Apple Silicon or Intel.
 
-The app interface is currently in Russian. The instructions below include the exact menu labels.
+English is the default interface language, regardless of the macOS language. Choose **Language → English / Русский** to switch instantly without restarting; your choice is saved. You can also use the language picker in the welcome window. In Russian, the submenu is called **«Язык»**. Menus, welcome and demo windows, colors, context menus, sliders, tooltips, accessibility labels, permission dialogs, and fallback window names are translated.
 
 ![Curtain demo window](docs/assets/curtain.png)
 
@@ -18,26 +18,28 @@ Native AppKit rendering of the demo window. The animation below shows the actual
 
 1. Download `Curtain-VERSION-universal.zip` from the [latest release](https://github.com/Hydrock/Curtain/releases/latest).
 2. Unzip it, move `Curtain.app` to Applications, and open it. A curtain icon appears in the menu bar.
-3. Choose **«Попробовать на демо-окне»** (Try on the demo window). The demo needs no window-access permission.
+3. Choose **Try the demo**. The demo needs no window-access permission.
 
 Release builds are ad hoc signed and are **not notarized**. macOS may block opening them. Developer ID signing and Apple notarization are not configured; these are needed for normal trusted distribution to other Macs. `SHA256SUMS.txt` accompanies each release for integrity checks.
 
 To attach curtains to another app:
 
-1. Choose **«Разрешить доступ к окнам…»** (Allow window access) from the menu bar, or **«Выбрать окно…»** (Choose a window) in the welcome window.
+1. Choose **Allow window access…** from the menu bar, or **Choose a window…** in the welcome window.
 2. In **System Settings → Privacy & Security → Device Control and Data Access**, enable Curtain. Earlier macOS versions call this panel **Accessibility**. If Curtain is missing, add the app using **+**.
-3. Open the Curtain menu and choose **«Повесить шторы на окно»** (Attach curtains to a window), then select a window.
+3. Open the Curtain menu and choose **Attach curtains to a window**, then select a window.
 
 You grant permission yourself. Screen Recording permission is unnecessary. Curtain does not connect to the network or save window contents.
 
 ## Controls and features
 
+Choose **About and controls…** to reopen the welcome window; its **Try the curtains** button opens the demo.
+
 - Drag any point of the fabric; neighboring areas follow it.
 - Pull toward the outside edge by more than 50 points and release to gather the curtain. Pull toward the middle to close it.
-- Double-click either curtain to toggle its position. Right-click for **«Открыть шторы»** (Open), **«Закрыть шторы»** (Close), or **«Снять шторы»** (Remove).
-- The menu bar offers **«Открыть все шторы»** (Open all), **«Закрыть все шторы»** (Close all), four fabric colors under **«Ткань»** (Fabric), and **«Снять все шторы»** (Remove all). Quitting removes all curtains.
-- **«Прозрачность»** (Transparency) ranges from 0% (opaque) to 90% (almost transparent). It applies immediately to all curtains, including new ones, and is saved between launches.
-- **«Звук штор»** (Curtain sound) toggles the fabric rustle. **«Громкость»** (Volume) adjusts it from 0–100%, starting at 35%. Both settings persist. Moving both curtains together plays the sound once.
+- Double-click either curtain to toggle its position. Right-click for **Open curtains**, **Close curtains**, or **Remove curtains**.
+- The menu bar offers **Open all curtains**, **Close all curtains**, four colors under **Fabric** (Velvet · Burgundy, Velvet · Forest, Velvet · Midnight, and Linen · Sand), and **Remove all curtains**. **Quit Curtain** removes all curtains and exits the app.
+- **Transparency** ranges from 0% (opaque) to 90% (almost transparent). It applies immediately to all curtains, including new ones, and is saved between launches.
+- **Curtain sound** toggles the fabric rustle. **Volume** adjusts it from 0–100%, starting at 35%. Both settings persist. Moving both curtains together plays the sound once.
 
 Curtains follow the window's position and size and hide when it is minimized or another window becomes active. They return when the selected window is active again. The title bar remains accessible, and clicks in the open gap pass through to the original app.
 
@@ -70,10 +72,10 @@ Tests cover cloth physics, demo-window attachment, gestures, transparency, volum
 To package a universal build locally:
 
 ```sh
-./release.sh 1.0.0
+./release.sh 1.1.0
 ```
 
-Packages are written to `build/releases`. Pushing a version tag such as `v1.0.0` runs `.github/workflows/release.yml`, builds a universal app, and publishes `Curtain-VERSION-universal.zip` and `SHA256SUMS.txt` in a GitHub Release.
+Packages are written to `build/releases`. Pushing a version tag such as `v1.1.0` runs `.github/workflows/release.yml`, builds a universal app, and publishes `Curtain-VERSION-universal.zip` and `SHA256SUMS.txt` in a GitHub Release.
 
 ## How it works and known limits
 

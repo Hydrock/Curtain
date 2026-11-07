@@ -72,6 +72,15 @@ check(volumeControl.label.stringValue.contains("80%"), "volume label updates whi
 volumeControl.slider.integerValue = 0
 _ = volumeControl.slider.sendAction(volumeControl.slider.action!, to: volumeControl.slider.target)
 check(changedVolume == 0, "volume slider can mute sound")
+let previousLanguage = Localization.shared.language
+for (language, expectedVolume, expectedTransparency) in [(AppLanguage.english, "Volume: 35%", "Transparency: 20%"), (.russian, "Громкость: 35%", "Прозрачность: 20%")] {
+    Localization.shared.language = language
+    let volume = VolumeControl(value: 35) { _ in }
+    let transparency = TransparencyControl(value: 20) { _ in }
+    check(volume.label.stringValue == expectedVolume, "volume control uses selected language")
+    check(transparency.label.stringValue == expectedTransparency, "transparency control uses selected language")
+}
+Localization.shared.language = previousLanguage
 attachment.remove()
 check(!attachment.panel.isVisible && attachment.dead,"remove dismisses curtain")
 window.orderOut(nil)

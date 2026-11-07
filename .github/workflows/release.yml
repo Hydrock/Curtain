@@ -1,0 +1,35 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Test without GUI windows
+        run: ./test.sh --headless
+      - name: Build universal release
+        run: ./release.sh "${GITHUB_REF_NAME#v}"
+      - name: Publish downloadable assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          if ! gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release create "$GITHUB_REF_NAME" --verify-tag --draft \
+              --title "Curtain $GITHUB_REF_NAME" --notes-file build/releases/RELEASE-NOTES.md
+          fi
+          gh release upload "$GITHUB_REF_NAME" build/releases/*.zip build/releases/SHA256SUMS.txt --clobber
+          prerelease=false
+          if [[ "$GITHUB_REF_NAME" == *-* ]]; then prerelease=true; fi
+          gh release edit "$GITHUB_REF_NAME" --draft=false --prerelease="$prerelease"

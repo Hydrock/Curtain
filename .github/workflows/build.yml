@@ -12,8 +12,13 @@ jobs:
   build:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Build app bundle
-        run: ./build.sh
-      - name: Verify app signature
-        run: codesign --verify --deep --strict build/Curtain.app
+      - uses: actions/checkout@v6
+      - name: Build universal app bundle
+        run: ./build.sh --universal
+      - name: Test without GUI windows
+        run: ./test.sh --headless
+      - name: Verify architecture and signature
+        run: |
+          architectures="$(lipo -archs build/Curtain.app/Contents/MacOS/Curtain)"
+          [[ " $architectures " == *" arm64 "* && " $architectures " == *" x86_64 "* ]]
+          codesign --verify --deep --strict build/Curtain.app

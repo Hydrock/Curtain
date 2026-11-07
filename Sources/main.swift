@@ -8,7 +8,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     var attachments: [CurtainAttachment] = []
     var targets: [WindowTarget] = []
     var timer: Timer?
-    var frame = 0
     let appearance = AppearanceSettings()
     let sound = CurtainSound()
     var tintIndex = UserDefaults.standard.integer(forKey:"fabricColor")
@@ -26,9 +25,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         let menu = NSMenu(); menu.delegate = self; status.menu = menu
         timer = Timer(timeInterval:1.0/60, repeats:true) { [weak self] _ in
             guard let self else { return }
-            self.frame += 1
             for attachment in self.attachments {
-                if self.frame % 2 == 0 { attachment.update() }
+                attachment.update()
                 if attachment.panel.isVisible { attachment.fabric.tick() }
             }
             self.attachments.filter { $0.dead }.forEach { $0.remove() }

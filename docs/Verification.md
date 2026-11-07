@@ -18,3 +18,15 @@ macOS 27.0.1, Apple Silicon, Swift 6.4; целевая система macOS 14+.
 окнах сторонних приложений. Прозрачность и звук также проверены пользователем.
 Автотесты дополнительно проверяют ползунки, сохранение настроек и декодирование WAV.
 Полноэкранный режим, несколько мониторов и Stage Manager не проверены.
+
+## Window tracking and release pipeline
+
+- Added immediate AX move/resize/focus notifications and 60 Hz fallback polling.
+- Batched geometry conversion rejects malformed values; regression tests pass.
+- Same-size layout preserves cloth momentum; the regression test fails against
+  the prior unconditional resize, and passes with the fix.
+- Full GUI and headless test suites pass locally.
+- Universal arm64 + x86_64 app builds and verifies after ZIP extraction.
+- Release archive checksum verified with `shasum -a 256 -c SHA256SUMS.txt`.
+- Native AppKit documentation rendering and animation generated using Tools/Demo.
+- Release builds remain ad hoc signed, not notarized.

@@ -25,6 +25,7 @@ final class FabricView: NSView {
     }
     required init?(coder: NSCoder) { fatalError() }
     override func setFrameSize(_ newSize: NSSize) {
+        guard newSize != frame.size else { return }
         super.setFrameSize(newSize)
         left.resize(width: newSize.width, height: newSize.height)
         right.resize(width: newSize.width, height: newSize.height)

@@ -1,98 +1,84 @@
 # Curtain
 
-Шторы для настоящих окон macOS. Нативное приложение на Swift и AppKit,
-без сторонних библиотек. macOS 14+, Apple Silicon или Intel.
+[English](README.md) | [Русский](README.ru.md)
 
-## Запуск
+Interactive curtains for real macOS windows. A native Swift and AppKit menu bar app with no third-party dependencies. Requires macOS 14 or later, on Apple Silicon or Intel.
 
-Сначала соберите приложение (см. ниже), затем откройте `build/Curtain.app`. Значок штор появится справа в строке меню.
-Нажмите «Попробовать шторы», чтобы открыть демонстрационное окно.
+The app interface is currently in Russian. The instructions below include the exact menu labels.
 
-Для других приложений:
-1. Нажмите «Выбрать окно…» или «Разрешить доступ к окнам…» в строке меню.
-2. В System Settings → Privacy & Security → Device Control and Data Access
-   включите Curtain (в более ранних версиях macOS этот пункт называется Accessibility). Если его нет, добавьте `build/Curtain.app` кнопкой «+».
-3. Через значок Curtain выберите «Повесить шторы на окно» и нужное окно.
+![Curtain demo window](docs/assets/curtain.png)
 
-Разрешение включает сам пользователь. Запись экрана не нужна. Приложение
-не подключается к сети и не сохраняет содержимое окон.
+Native AppKit rendering of the demo window. The animation below shows the actual cloth simulation.
 
-## Как играть
+![Curtain cloth simulation](docs/assets/demo.gif)
 
-- Тяните за любую точку ткани: соседние участки последуют за ней.
-- Потяните к внешнему краю окна более чем на 50 точек и отпустите — штора соберётся.
-- Потяните к середине — штора закроется.
-- Двойной щелчок по любой шторе переключает её положение.
-- Правый щелчок открывает меню: открыть, закрыть или снять.
-- В строке меню доступны открытие/закрытие всех штор, четыре цвета ткани
-  и «Снять все шторы». Завершение приложения убирает все шторы.
+[Watch the short video (MP4)](docs/assets/demo.mp4)
 
-Заголовок окна остаётся доступен. Шторы следуют за перемещением и изменением
-размера окна, скрываются при сворачивании. В открытом промежутке клики проходят
-к исходному приложению. Шторы появляются, когда выбранное окно активно;
-при переключении на другое окно они скрываются и затем возвращаются.
-Это предотвращает перекрытие посторонних окон.
+## Download and launch
 
-## Прозрачность
+1. Download `Curtain-VERSION-universal.zip` from the [latest release](https://github.com/Hydrock/Curtain/releases/latest).
+2. Unzip it, move `Curtain.app` to Applications, and open it. A curtain icon appears in the menu bar.
+3. Choose **«Попробовать на демо-окне»** (Try on the demo window). The demo needs no window-access permission.
 
-В меню Curtain находится ползунок «Прозрачность»: от 0% (плотная ткань)
-до 90% (почти прозрачная). Изменение сразу применяется ко всем шторам,
-включая новые. Выбранное значение сохраняется между запусками.
-Небольшая остаточная видимость позволяет всегда найти и схватить ткань.
+Release builds are ad hoc signed and are **not notarized**. macOS may block opening them. Developer ID signing and Apple notarization are not configured; these are needed for normal trusted distribution to other Macs. `SHA256SUMS.txt` accompanies each release for integrity checks.
 
-## Звук
+To attach curtains to another app:
 
-Открытие и закрытие сопровождаются мягким шорохом ткани. Работает с жестами,
-двойным щелчком и командами меню. Пункт «Звук штор» в меню Curtain отключает
-звук; настройка сохраняется. Ползунок «Громкость» под этим пунктом регулирует
-звук от 0 до 100%, значение сохраняется между запусками. Начальное значение
-35% сохраняет прежнюю громкость. 0% полностью убирает звук. Одновременное движение обеих штор звучит один раз.
-В приложение включён обработанный звук шторы, предоставленный пользователем.
-Смягчены высокие частоты и пики, добавлены плавные начало и затухание;
-громкость составляет 35% от первого мягкого варианта. Подключение к сети не нужно.
+1. Choose **«Разрешить доступ к окнам…»** (Allow window access) from the menu bar, or **«Выбрать окно…»** (Choose a window) in the welcome window.
+2. In **System Settings → Privacy & Security → Device Control and Data Access**, enable Curtain. Earlier macOS versions call this panel **Accessibility**. If Curtain is missing, add the app using **+**.
+3. Open the Curtain menu and choose **«Повесить шторы на окно»** (Attach curtains to a window), then select a window.
 
-## Сборка и тесты
+You grant permission yourself. Screen Recording permission is unnecessary. Curtain does not connect to the network or save window contents.
 
-Достаточно Command Line Tools для Xcode (`xcode-select --install`).
+## Controls and features
+
+- Drag any point of the fabric; neighboring areas follow it.
+- Pull toward the outside edge by more than 50 points and release to gather the curtain. Pull toward the middle to close it.
+- Double-click either curtain to toggle its position. Right-click for **«Открыть шторы»** (Open), **«Закрыть шторы»** (Close), or **«Снять шторы»** (Remove).
+- The menu bar offers **«Открыть все шторы»** (Open all), **«Закрыть все шторы»** (Close all), four fabric colors under **«Ткань»** (Fabric), and **«Снять все шторы»** (Remove all). Quitting removes all curtains.
+- **«Прозрачность»** (Transparency) ranges from 0% (opaque) to 90% (almost transparent). It applies immediately to all curtains, including new ones, and is saved between launches.
+- **«Звук штор»** (Curtain sound) toggles the fabric rustle. **«Громкость»** (Volume) adjusts it from 0–100%, starting at 35%. Both settings persist. Moving both curtains together plays the sound once.
+
+Curtains follow the window's position and size and hide when it is minimized or another window becomes active. They return when the selected window is active again. The title bar remains accessible, and clicks in the open gap pass through to the original app.
+
+## Build and test
+
+Install Xcode Command Line Tools (`xcode-select --install`), then:
 
 ```sh
 git clone https://github.com/Hydrock/Curtain.git
 cd Curtain
 ./build.sh
-./test.sh
 open build/Curtain.app
 ```
 
-Исходники также можно открыть в Xcode через `Package.swift`. Для обычного
-использования запускайте именно `.app`, собранный `build.sh`: у него постоянный
-идентификатор приложения. При изменении локальной подписи macOS может потребовать
-повторно добавить Curtain в список разрешений. Подпись локальная (ad hoc); для распространения
-на другие компьютеры нужна Developer ID подпись и нотариализация Apple.
+`./build.sh` builds for the current Mac's architecture. To build both Apple Silicon and Intel:
 
-Тесты проверяют физику ткани, привязку демо-штор к окну, обработку жестов,
-прозрачность, громкость, сохранение настроек и загрузку аудио.
-Для полного запуска `./test.sh` нужна графическая сессия macOS.
-GitHub Actions автоматически проверяет сборку и подпись приложения.
+```sh
+./build.sh --universal
+```
 
-## Устройство
+Run the full test suite in a macOS graphical session, or the core, settings, and audio tests without GUI access:
 
-- `Cloth.swift`: упругая сетка, закреплённые верхние кольца, затухание и сборка.
-- `FabricView.swift`: отрисовка складок, захват ткани, меню и прозрачные панели.
-- `WindowTracker.swift`: Accessibility API и преобразование координат экранов.
-- `Welcome.swift`: приветствие и демонстрационное окно.
-- `main.swift`: строка меню, жизненный цикл, разрешения и цвета.
-- `AppearanceSettings.swift`: сохранение прозрачности.
-- `TransparencyControl.swift`, `VolumeControl.swift`: ползунки меню.
-- `CurtainSound.swift`: воспроизведение звука и сохранение громкости.
+```sh
+./test.sh
+./test.sh --headless
+```
 
-Геометрия окон обновляется с частотой 30 Гц, ткань — 60 Гц. Штора моделируется
-упругим полем смещений относительно складчатой формы; это стилизованная физика,
-без самоколлизий и полноценного трёхмерного расчёта ткани.
+Tests cover cloth physics, demo-window attachment, gestures, transparency, volume, settings persistence, and audio loading. You can also open `Package.swift` in Xcode. For regular use, launch the `.app` produced by `build.sh`, which has a stable application identifier. Changing a local signature may require adding Curtain to the permission list again.
 
-## Ограничения
+To package a universal build locally:
 
-Окна приложений должны поддерживать Accessibility API. Некоторые игры,
-нестандартные окна, полноэкранные режимы и Stage Manager могут вести себя иначе.
-Для окна используется отступ заголовка 30 точек; необычные заголовки могут
-потребовать его настройки в `CurtainAttachment.body`. Пока не сохраняются
-привязки к окнам после перезапуска.
+```sh
+./release.sh 1.0.0
+```
+
+Packages are written to `build/releases`. Pushing a version tag such as `v1.0.0` runs `.github/workflows/release.yml`, builds a universal app, and publishes `Curtain-VERSION-universal.zip` and `SHA256SUMS.txt` in a GitHub Release.
+
+## How it works and known limits
+
+Cloth uses a spring-like displacement grid with fixed top rings, damping, and gathering, updated at 60 Hz. This is stylized physics without self-collision or a full 3D cloth simulation. Window geometry follows macOS Accessibility notifications with a 60 Hz fallback; position, size, and minimized state are read together. Focus is checked on notifications and every 100 ms as a fallback.
+
+Target apps must support the Accessibility API. Some games, custom windows, full-screen modes, and Stage Manager may behave differently. A fixed 30-point title-bar inset is used; unusual title bars may need an adjustment in `CurtainAttachment.body`. Window attachments are not restored after restarting.
+
+The bundled audio derives from a user-provided recording. Original distribution rights have not been independently verified; see [Resources/Sound-LICENSE.txt](Resources/Sound-LICENSE.txt).

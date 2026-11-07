@@ -80,6 +80,16 @@ for (language, expectedVolume, expectedTransparency) in [(AppLanguage.english, "
     check(volume.label.stringValue == expectedVolume, "volume control uses selected language")
     check(transparency.label.stringValue == expectedTransparency, "transparency control uses selected language")
 }
+    // Both slider callbacks and labels must follow the selected language.
+Localization.shared.language = .english
+var selectedWind = -1
+let windControl = WindControl(value: 35) { selectedWind = $0 }
+windControl.slider.integerValue = 75
+_ = windControl.slider.sendAction(windControl.slider.action!, to: windControl.slider.target)
+check(selectedWind == 75 && windControl.label.stringValue == "Wind strength: 75%", "wind slider applies strength and displays English")
+Localization.shared.language = .russian
+let russianWind = WindControl(value: 35) { _ in }
+check(russianWind.label.stringValue == "Сила ветра: 35%", "wind strength is translated")
 Localization.shared.language = previousLanguage
 attachment.remove()
 check(!attachment.panel.isVisible && attachment.dead,"remove dismisses curtain")

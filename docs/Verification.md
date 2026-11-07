@@ -39,3 +39,12 @@ macOS 27.0.1, Apple Silicon, Swift 6.4; целевая система macOS 14+.
   invalid preference fallback, notifications, persistence and translated slider labels.
 - Live UI inspection confirmed English → Russian → English without restart and correct layout.
 - PNG, GIF and MP4 were regenerated in English from the native AppKit views.
+
+## v1.2.0 wind
+
+- Full GUI suite and headless CI suite passed (six test groups).
+- New wind tests cover persistence, limits, still air, increased sway with force,
+  subtle maximum displacement, pinned top rings, dragging, opening/release,
+  smooth settling after switch-off and no unwanted sound events.
+- Integration tests cover the wind slider callback and English/Russian labels.
+- Wind defaults to off; enabled strength starts at 35%.

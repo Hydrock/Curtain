@@ -11,6 +11,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     var languageObserver: NSObjectProtocol?
     let appearance = AppearanceSettings()
     let sound = CurtainSound()
+    let wind = WindSettings()
     var tintIndex = UserDefaults.standard.integer(forKey:"fabricColor")
     var colors: [(String, NSColor)] { [
         (L("Velvet · Burgundy", "Бархат · винный"),NSColor(calibratedRed:0.43,green:0.16,blue:0.23,alpha:1)),
@@ -78,6 +79,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             self.attachments.forEach { $0.panel.alphaValue = self.appearance.opacity }
         }
         menu.addItem(transparencyItem)
+        let windItem = add(L("Wind", "Ветер"), #selector(toggleWind))
+        windItem.state = wind.enabled ? .on : .off
+        let windStrengthItem = NSMenuItem()
+        windStrengthItem.view = WindControl(value: wind.strengthPercent) { [weak self] value in
+            guard let self else { return }
+            self.wind.strengthPercent = value
+            self.attachments.forEach { self.applyWind($0) }
+        }
+        menu.addItem(windStrengthItem)
         let soundItem = add(L("Curtain sound", "Звук штор"), #selector(toggleSound))
         soundItem.state = sound.enabled ? .on : .off
         let volumeItem = NSMenuItem()
@@ -100,8 +110,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     func applyTint(_ attachment: CurtainAttachment) {
         attachment.fabric.tint = colors[max(0,min(colors.count-1,tintIndex))].1
         attachment.panel.alphaValue = appearance.opacity
+        applyWind(attachment)
         attachment.fabric.left.onOpenChanged = { [weak self] in self?.sound.play(opening: $0) }
         attachment.fabric.right.onOpenChanged = { [weak self] in self?.sound.play(opening: $0) }
+    }
+    func applyWind(_ attachment: CurtainAttachment) {
+        attachment.fabric.left.windStrength = CGFloat(wind.effectiveStrength)
+        attachment.fabric.right.windStrength = CGFloat(wind.effectiveStrength)
+    }
+    @objc func toggleWind() {
+        wind.enabled.toggle()
+        attachments.forEach { applyWind($0) }
     }
     @objc func attachWindow(_ sender:NSMenuItem) {
         guard targets.indices.contains(sender.tag) else { return }

@@ -9,7 +9,7 @@ mkdir -p .build/cache
 swiftc -O -module-cache-path .build/cache Sources/Cloth.swift Tests/main.swift -o .build/physics-tests
 .build/physics-tests
 if [[ "${1:-}" != --headless ]]; then
-swiftc -O -module-cache-path .build/cache Sources/Localization.swift Sources/Cloth.swift Sources/FabricView.swift Sources/WindowTracker.swift Sources/TransparencyControl.swift Sources/VolumeControl.swift Tests/Integration/main.swift -o .build/window-tests -framework AppKit -framework ApplicationServices
+swiftc -O -module-cache-path .build/cache Sources/Localization.swift Sources/Cloth.swift Sources/FabricView.swift Sources/WindowTracker.swift Sources/TransparencyControl.swift Sources/VolumeControl.swift Sources/WindControl.swift Tests/Integration/main.swift -o .build/window-tests -framework AppKit -framework ApplicationServices
 .build/window-tests
 fi
 
@@ -21,3 +21,6 @@ swiftc -O -module-cache-path .build/cache Sources/Cloth.swift Sources/CurtainSou
 
 swiftc -O -module-cache-path .build/cache Sources/Localization.swift Tests/Localization/main.swift -o .build/localization-tests
 .build/localization-tests
+
+swiftc -O -module-cache-path .build/cache Sources/Cloth.swift Sources/WindSettings.swift Tests/Wind/main.swift -o .build/wind-tests
+.build/wind-tests

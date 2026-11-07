@@ -15,6 +15,11 @@ final class Cloth {
     var open = false {
         didSet { if open != oldValue { onOpenChanged?(open) } }
     }
+    var windStrength: CGFloat = 0 {
+        didSet { windStrength = windStrength.isFinite ? min(1, max(0, windStrength)) : 0 }
+    }
+    private var windTime: CGFloat = 0
+    private var windGain: CGFloat = 0
     private(set) var gathering: CGFloat = 0
     private var held: Int?
     private var hand = CGPoint.zero
@@ -52,8 +57,17 @@ final class Cloth {
         gathering += ((open ? 1 : 0) - gathering) * 0.075
         // Fixed 120 Hz substeps give a stable spring solver independent of UI size.
         for _ in 0..<2 {
+            windTime += 1.0 / 120
+            windGain += (windStrength - windGain) * 0.0125
             let old = points
+            let phase: CGFloat = right ? 0.65 : 0
             for r in 0...rows {
+                let v = CGFloat(r) / CGFloat(rows)
+                // Slow, non-repeating-feeling gusts grow toward the free hem.
+                // Fade force in/out so the switch and slider never jerk the fabric.
+                let breeze = windGain > 0.000001
+                    ? windGain * v * v * (sin(windTime * 1.15 - v * 2.2 + phase)
+                        + 0.3 * sin(windTime * 0.57 - v * 4 + phase)) : 0
                 for c in 0...columns {
                     let i = r * (columns + 1) + c, target = rest(c, r)
                     if r == 0 { points[i] = target; velocity[i] = .zero; continue }
@@ -64,6 +78,8 @@ final class Cloth {
                         fx += ((old[j].x - neighbor.x) - (old[i].x - target.x)) * 0.12
                         fy += ((old[j].y - neighbor.y) - (old[i].y - target.y)) * 0.12
                     }
+                    fx += breeze * (0.085 + 0.025 * cos(CGFloat(c) * 0.4))
+                    fy += breeze * 0.012
                     velocity[i].dx = (velocity[i].dx + fx) * 0.91
                     velocity[i].dy = (velocity[i].dy + fy) * 0.91
                     points[i].x += velocity[i].dx; points[i].y += velocity[i].dy

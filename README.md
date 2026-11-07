@@ -43,6 +43,15 @@ Choose **About and controls…** to reopen the welcome window; its **Try the cur
 
 Curtains follow the window's position and size and hide when it is minimized or another window becomes active. They return when the selected window is active again. The title bar remains accessible, and clicks in the open gap pass through to the original app.
 
+## A breeze through the window
+
+Enable **Wind** in the Curtain menu and adjust **Wind strength** from 0–100%.
+The breeze gently sways the fabric, mostly near its free hem. The top rings stay
+fixed and dragging still follows your hand. Switching wind on or off fades the
+force smoothly; it never triggers curtain sound effects. Both settings are saved
+and apply to existing and newly attached windows. Wind is off by default, with
+35% strength ready when enabled. Setting strength to 0 gives still air.
+
 ## Build and test
 
 Install Xcode Command Line Tools (`xcode-select --install`), then:
@@ -72,10 +81,10 @@ Tests cover cloth physics, demo-window attachment, gestures, transparency, volum
 To package a universal build locally:
 
 ```sh
-./release.sh 1.1.0
+./release.sh 1.2.0
 ```
 
-Packages are written to `build/releases`. Pushing a version tag such as `v1.1.0` runs `.github/workflows/release.yml`, builds a universal app, and publishes `Curtain-VERSION-universal.zip` and `SHA256SUMS.txt` in a GitHub Release.
+Packages are written to `build/releases`. Pushing a version tag such as `v1.2.0` runs `.github/workflows/release.yml`, builds a universal app, and publishes `Curtain-VERSION-universal.zip` and `SHA256SUMS.txt` in a GitHub Release.
 
 ## How it works and known limits
 

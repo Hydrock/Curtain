@@ -31,6 +31,7 @@ final class WelcomeView: NSView {
             }
         }
         NSGraphicsContext.restoreGraphicsState()
+        text(L("Material", "Материал"),at:CGPoint(x:500,y:472),size:11,color:ink.withAlphaComponent(0.65))
         text(L("DREAMED INTO EXISTENCE", "ПРИДУМАНО ВО СНЕ"),at:CGPoint(x:515,y:450),size:10,color:ink.withAlphaComponent(0.5),weight:.medium)
     }
     private var ink: NSColor { NSColor(calibratedRed:0.20,green:0.25,blue:0.23,alpha:1) }

@@ -11,6 +11,7 @@ final class Cloth {
     private var width: CGFloat
     private var height: CGFloat
     let right: Bool
+    var material: FabricMaterial = .velvet
     var onOpenChanged: ((Bool) -> Void)?
     var open = false {
         didSet { if open != oldValue { onOpenChanged?(open) } }
@@ -31,9 +32,9 @@ final class Cloth {
     }
     func rest(_ c: Int, _ r: Int) -> CGPoint {
         let u = CGFloat(c) / CGFloat(columns), v = CGFloat(r) / CGFloat(rows)
-        let span = width * (0.512 * (1 - gathering) + 0.085 * gathering)
+        let span = width * (0.512 * (1 - gathering) + material.gatheredWidth * gathering)
         let x = u * span
-        let hem = sin(u * .pi * 8) * (2 + 3 * gathering) * pow(v, 5)
+        let hem = sin(u * .pi * material.foldCount * 2) * (2 + 3 * gathering) * material.foldDepth * pow(v, 5)
         return CGPoint(x: right ? width - x : x, y: v * (height - 8) + hem + 4)
     }
     func resize(width: CGFloat, height: CGFloat) {
@@ -54,7 +55,7 @@ final class Cloth {
     }
     func release() { held = nil }
     func step() {
-        gathering += ((open ? 1 : 0) - gathering) * 0.075
+        gathering += ((open ? 1 : 0) - gathering) * material.gatheringSpeed
         // Fixed 120 Hz substeps give a stable spring solver independent of UI size.
         for _ in 0..<2 {
             windTime += 1.0 / 120
@@ -68,23 +69,23 @@ final class Cloth {
                 // Slow, non-repeating-feeling gusts grow toward the free hem.
                 // Fade force in/out so the switch and slider never jerk the fabric.
                 let breeze = windGain > 0.000001
-                    ? windAmplitude * v * v * (sin(windTime * 1.15 - v * 2.2 + phase)
+                    ? windAmplitude * material.windResponse * v * v * (sin(windTime * 1.15 - v * 2.2 + phase)
                         + 0.3 * sin(windTime * 0.57 - v * 4 + phase)
                         + 0.2 * windGain * windGain * sin(windTime * 3.2 - v * 6.5 + phase)) : 0
                 for c in 0...columns {
                     let i = r * (columns + 1) + c, target = rest(c, r)
                     if r == 0 { points[i] = target; velocity[i] = .zero; continue }
-                    var fx = (target.x - old[i].x) * 0.018
-                    var fy = (target.y - old[i].y) * 0.018
+                    var fx = (target.x - old[i].x) * material.restoring
+                    var fy = (target.y - old[i].y) * material.restoring
                     for (nc, nr) in [(c-1,r),(c+1,r),(c,r-1),(c,r+1)] where nc >= 0 && nc <= columns && nr >= 0 && nr <= rows {
                         let j = nr * (columns + 1) + nc, neighbor = rest(nc, nr)
-                        fx += ((old[j].x - neighbor.x) - (old[i].x - target.x)) * 0.12
-                        fy += ((old[j].y - neighbor.y) - (old[i].y - target.y)) * 0.12
+                        fx += ((old[j].x - neighbor.x) - (old[i].x - target.x)) * material.coupling
+                        fy += ((old[j].y - neighbor.y) - (old[i].y - target.y)) * material.coupling
                     }
                     fx += breeze * (0.085 + 0.025 * cos(CGFloat(c) * 0.4))
                     fy += breeze * 0.012
-                    velocity[i].dx = (velocity[i].dx + fx) * 0.91
-                    velocity[i].dy = (velocity[i].dy + fy) * 0.91
+                    velocity[i].dx = (velocity[i].dx + fx * material.inverseMass) * material.damping
+                    velocity[i].dy = (velocity[i].dy + fy * material.inverseMass) * material.damping
                     points[i].x += velocity[i].dx; points[i].y += velocity[i].dy
                 }
             }

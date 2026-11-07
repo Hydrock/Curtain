@@ -17,7 +17,7 @@ if (( ${#build_architectures[@]} == 2 )); then
 else
   cp ".build/${build_architectures[1]}/Curtain" "$app_bundle/Contents/MacOS/Curtain"
 fi
-cp Resources/*.wav Resources/Sound-LICENSE.txt "$app_bundle/Contents/Resources/"
+cp Resources/*.wav Resources/*.txt "$app_bundle/Contents/Resources/"
 cp Info.plist "$app_bundle/Contents/Info.plist"
 if [[ -n "${CURTAIN_VERSION:-}" ]]; then
   /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $CURTAIN_VERSION" "$app_bundle/Contents/Info.plist"

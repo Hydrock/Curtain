@@ -1,0 +1,34 @@
+Curtain material sound variants
+
+Provenance
+The six material WAV files are derived only from the existing, user-approved
+CurtainOpen.wav / CurtainClose.wav recordings. Those approved clips originate
+from the user-provided file freesound_community-shower-curtain-fast-105401.mp3.
+No external audio was downloaded. No license or ownership claim is made here;
+retain and consult the original source's license information when distributing.
+The two approved Curtain WAV files are unchanged.
+
+Reproduce
+Run Tools/make-material-sounds.sh from any directory with ffmpeg installed.
+Inputs are the bundled approved Curtain WAV files; no personal filesystem path
+is needed. Output is mono, 44,100 Hz, signed 16-bit PCM WAV.
+Close variants reverse the original gesture before the material processing,
+so each direction has a distinct waveform. No synthetic noise is added.
+
+Processing
+Velvet: slowed playback to 90%, 65 Hz high-pass, 1,500 Hz low-pass,
+        0.82 gain, 35 ms attack and 110 ms tail fade. Heavy, muffled swish.
+Cotton: 1.25x tempo, 210 Hz high-pass, 4,800 Hz low-pass,
+        0.78 gain, 15 ms attack and 85 ms tail fade. Short, dry swish.
+Tulle: 1.08x tempo, 460 Hz high-pass, 3,300 Hz low-pass,
+       0.62 gain, 45 ms attack and 115 ms tail fade. Quiet, light swish.
+The short approved source already has no long dead air; fades soften edges.
+
+Verification (ffmpeg volumedetect, dBFS; open / close)
+Baseline Curtain: duration 0.781 s; mean -37.7; peak -16.7.
+Velvet: duration 0.867 s; mean -42.9 / -42.9; peak -21.9 / -22.0.
+Cotton: duration 0.643 s; mean -41.2 / -41.0; peak -20.5 / -21.2.
+Tulle: duration 0.738 s; mean -43.4 / -43.6; peak -22.8 / -22.0.
+All six decode successfully and have different SHA-256 hashes. Every average
+and peak level is lower than the approved clip. No subjective listening test
+is claimed; these descriptions reflect the applied tempo and filter choices.

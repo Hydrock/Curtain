@@ -56,3 +56,17 @@ macOS 27.0.1, Apple Silicon, Swift 6.4; целевая система macOS 14+.
 - 800×500 simulation measured 1.8pt hem range at 20% and 88.9pt at 100%.
 - All six test groups and headless subset pass, including bounded maximum force,
   pinned rings, hand control, release and settling after disabling wind.
+
+## v1.3.0 materials
+
+- Full GUI and headless suites pass (seven test groups).
+- All materials remain finite in strong wind, keep top anchors pinned, follow
+  the hand, close and settle after wind. Release trajectories differ.
+- Rendering tests verify opaque velvet, dense cotton and sheer tulle after
+  layer compositing. Switching material preserves a grabbed point.
+- Preferences default to velvet, persist selection, and reject unknown IDs.
+- All six new WAVs decode and are unique; opening and closing select the current material.
+- Native AppKit comparison image added, docs updated in English and Russian.
+
+- Live UI inspection confirmed the three choices in the welcome picker and
+  visible demo contents through the selected tulle.

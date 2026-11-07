@@ -30,4 +30,15 @@ for name in ["CurtainOpen", "CurtainClose"] {
     check(data.count > 40000, "recording is present")
     check(NSSound(contentsOf: url, byReference: false) != nil, "recording decodes in AppKit")
 }
+var materialRecordings = Set<Data>()
+for material in FabricMaterial.allCases {
+    for direction in ["Open", "Close"] {
+        let path = "Resources/\(material.soundPrefix)\(direction).wav"
+        let data = try! Data(contentsOf: URL(fileURLWithPath: path))
+        check(NSSound(data: data) != nil, "material audio decodes")
+        materialRecordings.insert(data)
+    }
+}
+check(materialRecordings.count == 6, "materials and directions have distinct audio recordings")
+check(CurtainSound.wave(opening:true, material:.cotton) != CurtainSound.wave(opening:true, material:.tulle), "fallback sounds also follow the material")
 print("PASS: audio format, distinct sound assets, transition notifications, mute persistence, bundled recordings decode")

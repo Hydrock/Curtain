@@ -12,6 +12,9 @@ final class FabricView: NSView {
     var left: Cloth
     var right: Cloth
     var tint = NSColor(calibratedRed: 0.32, green: 0.12, blue: 0.19, alpha: 1)
+    var material: FabricMaterial = .velvet {
+        didSet { left.material = material; right.material = material; needsDisplay = true }
+    }
     var dragging: Cloth?
     var onDismiss: (() -> Void)?
     private var down = CGPoint.zero
@@ -63,14 +66,20 @@ final class FabricView: NSView {
     }
     private func drawFabric(_ cloth: Cloth, context ctx: CGContext) {
         let path = outline(cloth)
+        // Composite the complete fabric once: base fill, folds and threads must
+        // not accumulate opacity and turn the sheer tulle back into opaque cloth.
+        ctx.saveGState()
+        ctx.setAlpha(material.opacity)
+        ctx.beginTransparencyLayer(auxiliaryInfo: nil)
         NSGraphicsContext.saveGraphicsState()
-        let shadow = NSShadow(); shadow.shadowColor = .black.withAlphaComponent(0.32)
+        let shadow = NSShadow(); shadow.shadowColor = .black.withAlphaComponent(material == .velvet ? 0.32 : 0.14)
         shadow.shadowBlurRadius = 10; shadow.shadowOffset = NSSize(width: cloth.right ? -4 : 4, height: -4)
-        shadow.set(); tint.setFill(); path.fill()
+        let fabricTint = tint.blended(withFraction: material.whiteness, of: .white) ?? tint
+        shadow.set(); fabricTint.setFill(); path.fill()
         NSGraphicsContext.restoreGraphicsState()
         NSGraphicsContext.saveGraphicsState()
         path.addClip()
-        let base = tint.usingColorSpace(.deviceRGB)!
+        let base = fabricTint.usingColorSpace(.deviceRGB)!
         let stride = cloth.columns + 1
         // Subdivide each mesh strip for smooth, continuous velvet highlights.
         for c in 0..<cloth.columns {
@@ -84,9 +93,11 @@ final class FabricView: NSView {
                 for r in 1...cloth.rows { strip.line(to: point(r,a)) }
                 for r in (0...cloth.rows).reversed() { strip.line(to: point(r,b)) }
                 strip.close()
-                let phase = (CGFloat(c) + (a+b)/2) / CGFloat(cloth.columns) * .pi * 16
-                let light = 0.68 + 0.32 * cos(phase) + 0.12 * sin(phase)
-                NSColor(calibratedRed: min(1,base.redComponent*light*1.25), green: min(1,base.greenComponent*light*1.25), blue: min(1,base.blueComponent*light*1.25), alpha: 1).setFill()
+                let phase = (CGFloat(c) + (a+b)/2) / CGFloat(cloth.columns) * .pi * material.foldCount * 2
+                let depth = material.foldContrast
+                let light = (1 - depth) + depth * cos(phase) + depth * 0.375 * sin(phase)
+                let brightness: CGFloat = material == .velvet ? 1.25 : (material == .cotton ? 1.08 : 1)
+                NSColor(calibratedRed: min(1,base.redComponent*light*brightness), green: min(1,base.greenComponent*light*brightness), blue: min(1,base.blueComponent*light*brightness), alpha: 1).setFill()
                 strip.fill()
             }
         }
@@ -97,6 +108,14 @@ final class FabricView: NSView {
             threads.move(to: CGPoint(x: 0, y: y)); threads.line(to: CGPoint(x: bounds.width, y: y))
         }
         threads.stroke()
+        if material == .tulle {
+            // A fine open weave, with the window visible through the fabric.
+            let weave = NSBezierPath(); weave.lineWidth = 0.4
+            for x in Swift.stride(from: CGFloat(0), to: bounds.width, by: CGFloat(5)) {
+                weave.move(to: CGPoint(x:x,y:0)); weave.line(to:CGPoint(x:x,y:bounds.height))
+            }
+            NSColor.white.withAlphaComponent(0.18).setStroke(); weave.stroke()
+        }
         let hem = NSBezierPath()
         for c in 0...cloth.columns {
             var p = cloth.points[cloth.rows*stride+c]; p.y -= 7
@@ -104,6 +123,8 @@ final class FabricView: NSView {
         }
         NSColor.black.withAlphaComponent(0.2).setStroke(); hem.lineWidth = 1; hem.stroke()
         NSGraphicsContext.restoreGraphicsState()
+        ctx.endTransparencyLayer()
+        ctx.restoreGState()
     }
     private func strideThrough(height: CGFloat) -> [CGFloat] {
         Array(Swift.stride(from: CGFloat(10), to: height, by: CGFloat(4)))

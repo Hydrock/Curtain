@@ -18,10 +18,12 @@ release_archive="Curtain-$release_version-universal.zip"
 ditto -c -k --sequesterRsrc --keepParent build/Curtain.app "build/releases/$release_archive"
 (cd build/releases && shasum -a 256 "$release_archive" > SHA256SUMS.txt)
 cat > build/releases/RELEASE-NOTES.md <<NOTES
-Native curtains for macOS windows, with cloth physics, wind, transparency and sound controls.
+Native curtains for macOS windows, with cloth physics, materials, wind and sound controls.
 
-New: enable Wind and adjust Wind strength from a gentle breeze to strong gusts at 100%.
-The setting is saved and works with all attached windows.
+New: choose Heavy velvet, Springy cotton or Light tulle. Each has its own physics,
+folds, density and opening/closing sounds. Material and color are independent.
+The selection is saved and applies immediately to all attached windows.
+Wind still ranges from a gentle breeze to strong gusts at 100%.
 
 - Requires macOS 14 or later. Universal app: Apple Silicon and Intel.
 - Download **$release_archive**, unzip, and move Curtain.app to Applications.

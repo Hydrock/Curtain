@@ -14,5 +14,9 @@ final class AppearanceSettings {
             defaults.set(storedTransparency, forKey: "curtainTransparency")
         }
     }
+    var material: FabricMaterial {
+        get { FabricMaterial(rawValue: defaults.string(forKey: "curtainMaterial") ?? "") ?? .velvet }
+        set { defaults.set(newValue.rawValue, forKey: "curtainMaterial") }
+    }
     var opacity: Double { 1 - Double(storedTransparency) / 100 }
 }

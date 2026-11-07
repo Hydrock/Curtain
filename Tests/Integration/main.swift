@@ -91,6 +91,27 @@ Localization.shared.language = .russian
 let russianWind = WindControl(value: 35) { _ in }
 check(russianWind.label.stringValue == "Сила ветра: 35%", "wind strength is translated")
 Localization.shared.language = previousLanguage
+func renderedOpacity(_ material: FabricMaterial) -> CGFloat {
+    let view = FabricView(frame: CGRect(x:0,y:0,width:800,height:500))
+    view.material = material
+    let bitmap = NSBitmapImageRep(bitmapDataPlanes:nil,pixelsWide:800,pixelsHigh:500,bitsPerSample:8,samplesPerPixel:4,hasAlpha:true,isPlanar:false,colorSpaceName:.deviceRGB,bytesPerRow:0,bitsPerPixel:0)!
+    NSGraphicsContext.saveGraphicsState()
+    NSGraphicsContext.current = NSGraphicsContext(bitmapImageRep:bitmap)
+    view.draw(view.bounds)
+    NSGraphicsContext.restoreGraphicsState()
+    return bitmap.colorAt(x:200,y:200)!.alphaComponent
+}
+let velvetOpacity = renderedOpacity(.velvet), cottonOpacity = renderedOpacity(.cotton), tulleOpacity = renderedOpacity(.tulle)
+check(velvetOpacity > 0.98, "velvet remains opaque")
+check(cottonOpacity > 0.85 && cottonOpacity < 0.98, "cotton renders with its own density")
+check(tulleOpacity > 0.15 && tulleOpacity < 0.5, "tulle is actually see-through after composing folds")
+let movingMaterial = FabricView(frame: CGRect(x:0,y:0,width:800,height:500))
+movingMaterial.left.grab(index:200, at:CGPoint(x:250,y:200))
+movingMaterial.tick()
+let grabbed = movingMaterial.left.points[200]
+movingMaterial.material = .tulle
+check(movingMaterial.left.material == .tulle && movingMaterial.right.material == .tulle, "material updates both panels")
+check(movingMaterial.left.points[200] == grabbed, "switching material does not reset a grabbed curtain")
 attachment.remove()
 check(!attachment.panel.isVisible && attachment.dead,"remove dismisses curtain")
 window.orderOut(nil)

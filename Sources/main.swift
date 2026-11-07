@@ -14,10 +14,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     let wind = WindSettings()
     var tintIndex = UserDefaults.standard.integer(forKey:"fabricColor")
     var colors: [(String, NSColor)] { [
-        (L("Velvet · Burgundy", "Бархат · винный"),NSColor(calibratedRed:0.43,green:0.16,blue:0.23,alpha:1)),
-        (L("Velvet · Forest", "Бархат · хвойный"),NSColor(calibratedRed:0.13,green:0.34,blue:0.29,alpha:1)),
-        (L("Linen · Sand", "Лён · песочный"),NSColor(calibratedRed:0.74,green:0.63,blue:0.46,alpha:1)),
-        (L("Velvet · Midnight", "Бархат · ночной"),NSColor(calibratedRed:0.18,green:0.25,blue:0.43,alpha:1))
+        (L("Burgundy", "Винный"),NSColor(calibratedRed:0.43,green:0.16,blue:0.23,alpha:1)),
+        (L("Forest", "Хвойный"),NSColor(calibratedRed:0.13,green:0.34,blue:0.29,alpha:1)),
+        (L("Sand", "Песочный"),NSColor(calibratedRed:0.74,green:0.63,blue:0.46,alpha:1)),
+        (L("Midnight", "Ночной"),NSColor(calibratedRed:0.18,green:0.25,blue:0.43,alpha:1))
     ] }
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
@@ -66,7 +66,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         menu.addItem(.separator())
         add(L("Open all curtains", "Открыть все шторы"),#selector(openAll))
         add(L("Close all curtains", "Закрыть все шторы"),#selector(closeAll))
-        let colorMenu = NSMenu(), colorItem = add(L("Fabric", "Ткань"),nil)
+        let materialItem = add(L("Material", "Материал"), nil)
+        let materialMenu = NSMenu()
+        for (index, material) in FabricMaterial.allCases.enumerated() {
+            let item = materialMenu.addItem(withTitle:L(material.englishName, material.russianName), action:#selector(changeMaterial(_:)), keyEquivalent:"")
+            item.target = self; item.tag = index
+            item.state = appearance.material == material ? .on : .off
+        }
+        materialItem.submenu = materialMenu
+        let colorMenu = NSMenu(), colorItem = add(L("Color", "Цвет"),nil)
         for (i,color) in colors.enumerated() {
             let item = colorMenu.addItem(withTitle:color.0,action:#selector(changeColor(_:)),keyEquivalent:"")
             item.target = self; item.tag = i; item.state = i == tintIndex ? .on : .off
@@ -108,11 +116,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         add(L("Quit Curtain", "Завершить Curtain"),#selector(quit),key:"q")
     }
     func applyTint(_ attachment: CurtainAttachment) {
+        attachment.fabric.material = appearance.material
         attachment.fabric.tint = colors[max(0,min(colors.count-1,tintIndex))].1
         attachment.panel.alphaValue = appearance.opacity
         applyWind(attachment)
-        attachment.fabric.left.onOpenChanged = { [weak self] in self?.sound.play(opening: $0) }
-        attachment.fabric.right.onOpenChanged = { [weak self] in self?.sound.play(opening: $0) }
+        attachment.fabric.left.onOpenChanged = { [weak self] in self?.sound.play(opening: $0, material: self?.appearance.material ?? .velvet) }
+        attachment.fabric.right.onOpenChanged = { [weak self] in self?.sound.play(opening: $0, material: self?.appearance.material ?? .velvet) }
     }
     func applyWind(_ attachment: CurtainAttachment) {
         attachment.fabric.left.windStrength = CGFloat(wind.effectiveStrength)
@@ -148,6 +157,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         languagePicker.tag = 1003; languagePicker.target = self; languagePicker.action = #selector(chooseWelcomeLanguage(_:))
         languagePicker.setAccessibilityLabel(L("Language", "Язык"))
         view.addSubview(languagePicker)
+        let materialPicker = NSPopUpButton(frame:NSRect(x:495,y:490,width:230,height:30), pullsDown:false)
+        materialPicker.addItems(withTitles:FabricMaterial.allCases.map { L($0.englishName, $0.russianName) })
+        materialPicker.selectItem(at:FabricMaterial.allCases.firstIndex(of:appearance.material) ?? 0)
+        materialPicker.tag = 1004; materialPicker.target = self; materialPicker.action = #selector(chooseWelcomeMaterial(_:))
+        materialPicker.setAccessibilityLabel(L("Material", "Материал"))
+        view.addSubview(materialPicker)
         welcome = window; window.center(); NSApp.activate(ignoringOtherApps:true); window.makeKeyAndOrderFront(nil)
     }
     @objc func chooseWindow() {
@@ -185,6 +200,20 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     @objc func openAll() { attachments.forEach { $0.fabric.setOpen(true) } }
     @objc func closeAll() { attachments.forEach { $0.fabric.setOpen(false) } }
     @objc func removeAll() { attachments.forEach { $0.remove() }; attachments.removeAll() }
+    @objc func changeMaterial(_ sender: NSMenuItem) {
+        guard FabricMaterial.allCases.indices.contains(sender.tag) else { return }
+        setMaterial(FabricMaterial.allCases[sender.tag])
+    }
+    @objc func chooseWelcomeMaterial(_ sender: NSPopUpButton) {
+        guard FabricMaterial.allCases.indices.contains(sender.indexOfSelectedItem) else { return }
+        setMaterial(FabricMaterial.allCases[sender.indexOfSelectedItem])
+    }
+    func setMaterial(_ material: FabricMaterial) {
+        appearance.material = material
+        sound.stop()
+        attachments.forEach { applyTint($0) }
+        (welcome?.contentView?.viewWithTag(1004) as? NSPopUpButton)?.selectItem(at:FabricMaterial.allCases.firstIndex(of:material) ?? 0)
+    }
     @objc func changeColor(_ sender:NSMenuItem) {
         tintIndex = sender.tag; UserDefaults.standard.set(tintIndex,forKey:"fabricColor")
         attachments.forEach { applyTint($0) }
@@ -204,6 +233,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         if let picker = welcome?.contentView?.viewWithTag(1003) as? NSPopUpButton {
             picker.selectItem(at: AppLanguage.allCases.firstIndex(of: Localization.shared.language) ?? 0)
             picker.setAccessibilityLabel(L("Language", "Язык"))
+        }
+        if let picker = welcome?.contentView?.viewWithTag(1004) as? NSPopUpButton {
+            picker.removeAllItems()
+            picker.addItems(withTitles:FabricMaterial.allCases.map { L($0.englishName, $0.russianName) })
+            picker.selectItem(at:FabricMaterial.allCases.firstIndex(of:appearance.material) ?? 0)
+            picker.setAccessibilityLabel(L("Material", "Материал"))
         }
         welcome?.contentView?.needsDisplay = true
         demo?.title = L("Curtain · pull the fabric", "Curtain · потяните за ткань")

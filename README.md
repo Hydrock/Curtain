@@ -37,11 +37,25 @@ Choose **About and controls…** to reopen the welcome window; its **Try the cur
 - Drag any point of the fabric; neighboring areas follow it.
 - Pull toward the outside edge by more than 50 points and release to gather the curtain. Pull toward the middle to close it.
 - Double-click either curtain to toggle its position. Right-click for **Open curtains**, **Close curtains**, or **Remove curtains**.
-- The menu bar offers **Open all curtains**, **Close all curtains**, four colors under **Fabric** (Velvet · Burgundy, Velvet · Forest, Velvet · Midnight, and Linen · Sand), and **Remove all curtains**. **Quit Curtain** removes all curtains and exits the app.
-- **Transparency** ranges from 0% (opaque) to 90% (almost transparent). It applies immediately to all curtains, including new ones, and is saved between launches.
-- **Curtain sound** toggles the fabric rustle. **Volume** adjusts it from 0–100%, starting at 35%. Both settings persist. Moving both curtains together plays the sound once.
+- The menu bar offers **Open all curtains**, **Close all curtains**, four colors under **Color** (Burgundy, Forest, Sand, and Midnight), and **Remove all curtains**. **Quit Curtain** removes all curtains and exits the app.
+- **Transparency** adds 0–90% transparency to the selected material’s own density; tulle stays sheer even at 0%. It applies immediately to all curtains, including new ones, and is saved between launches.
+- **Curtain sound** toggles the fabric rustle. **Volume** adjusts it from 0–100%, starting at 35%. Both settings persist. Each material has distinct opening and closing sounds at a quiet level, derived from the same user-provided recording. Moving both curtains together plays the sound once. See [Resources/MaterialSounds.txt](Resources/MaterialSounds.txt) for processing notes.
 
 Curtains follow the window's position and size and hide when it is minimized or another window becomes active. They return when the selected window is active again. The title bar remains accessible, and clicks in the open gap pass through to the original app.
+
+## Materials
+
+Choose **Material → Heavy velvet / Springy cotton / Light tulle**, or use the material picker in the welcome window. Heavy velvet is the default and preserves the original look. The choice is saved and applies immediately to existing and new curtains, without resetting the simulation or changing whether curtains are open or closed.
+
+| Material | Appearance | Motion |
+| --- | --- | --- |
+| Heavy velvet | Eight deep folds, fully opaque | Heavy and damped |
+| Springy cotton | Six shallower, matte folds, 94% opacity | More elastic |
+| Light tulle | Twelve fine folds, pale tint and open weave, 32% opacity | Light and responsive to wind |
+
+Materials differ in mass, damping, stiffness, opening speed, and wind response. **Color** remains a separate choice. The rail keeps its own opacity, independent of material density.
+
+![Native AppKit rendering comparing the three materials](docs/assets/materials.png)
 
 ## A breeze through the window
 
@@ -83,10 +97,10 @@ Tests cover cloth physics, demo-window attachment, gestures, transparency, volum
 To package a universal build locally:
 
 ```sh
-./release.sh 1.2.1
+./release.sh 1.3.0
 ```
 
-Packages are written to `build/releases`. Pushing a version tag such as `v1.2.1` runs `.github/workflows/release.yml`, builds a universal app, and publishes `Curtain-VERSION-universal.zip` and `SHA256SUMS.txt` in a GitHub Release.
+Packages are written to `build/releases`. Pushing a version tag such as `v1.3.0` runs `.github/workflows/release.yml`, builds a universal app, and publishes `Curtain-VERSION-universal.zip` and `SHA256SUMS.txt` in a GitHub Release.
 
 ## How it works and known limits
 

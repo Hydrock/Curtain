@@ -1,8 +1,8 @@
 import AppKit
 
 final class CurtainSound {
-    private let opening = CurtainSound.sound(opening: true)
-    private let closing = CurtainSound.sound(opening: false)
+    private var clips: [String: NSSound] = [:]
+    private var activeSound: NSSound?
     private let defaults: UserDefaults
     init(defaults: UserDefaults = .standard) { self.defaults = defaults }
     private var lastPlay = -Double.infinity
@@ -18,30 +18,34 @@ final class CurtainSound {
         set {
             let value = min(100, max(0, newValue))
             defaults.set(value, forKey: "curtainVolume")
-            opening?.volume = Float(value) / 100
-            closing?.volume = Float(value) / 100
+            clips.values.forEach { $0.volume = Float(value) / 100 }
         }
     }
-    func play(opening: Bool) {
+    func play(opening: Bool, material: FabricMaterial = .velvet) {
         let now = ProcessInfo.processInfo.systemUptime
         // Both fabric panels and multi-window commands share one quiet sound.
         guard enabled, volumePercent > 0, now - lastPlay > 0.09 else { return }
         lastPlay = now
-        self.opening?.stop(); closing?.stop()
-        let sound = opening ? self.opening : closing
+        activeSound?.stop()
+        let key = material.soundPrefix + (opening ? "Open" : "Close")
+        if clips[key] == nil { clips[key] = Self.sound(opening: opening, material: material) }
+        let sound = clips[key]
+        activeSound = sound
         sound?.volume = Float(volumePercent) / 100
         sound?.play()
     }
-    private static func sound(opening: Bool) -> NSSound? {
-        let name = opening ? "CurtainOpen" : "CurtainClose"
+    func stop() { activeSound?.stop(); activeSound = nil; lastPlay = -Double.infinity }
+    private static func sound(opening: Bool, material: FabricMaterial) -> NSSound? {
+        let name = material.soundPrefix + (opening ? "Open" : "Close")
         if let url = Bundle.main.url(forResource: name, withExtension: "wav"),
            let sound = NSSound(contentsOf: url, byReference: false) { return sound }
-        return NSSound(data: wave(opening: opening))
+        return NSSound(data: wave(opening: opening, material: material))
     }
     /// Fallback for command-line builds without bundled recordings.
     /// Deterministic filtered noise: a soft fabric swish with subtle rail texture.
-    static func wave(opening: Bool) -> Data {
-        let rate = 44100, count = Int(Double(rate) * (opening ? 0.68 : 0.78))
+    static func wave(opening: Bool, material: FabricMaterial = .velvet) -> Data {
+        let duration = material == .velvet ? 1.0 : (material == .cotton ? 0.8 : 0.92)
+        let rate = 44100, count = Int(Double(rate) * (opening ? 0.68 : 0.78) * duration)
         var data = Data()
         func ascii(_ value: String) { data.append(contentsOf: value.utf8) }
         func u16(_ value: UInt16) { var v = value.littleEndian; withUnsafeBytes(of: &v) { data.append(contentsOf: $0) } }
@@ -55,7 +59,8 @@ final class CurtainSound {
             seed = seed &* 1664525 &+ 1013904223
             let noise = Double(seed) / Double(UInt32.max) * 2 - 1
             low += 0.009 * (noise - low)
-            smooth += 0.065 * (noise - smooth)
+            let filter = material == .velvet ? 0.065 : (material == .cotton ? 0.11 : 0.04)
+            smooth += filter * (noise - smooth)
             let t = Double(i) / Double(count - 1)
             let envelope = pow(sin(.pi * t), 1.4)
             let ripple = 0.78 + 0.22 * sin(Double(i) / Double(rate) * 2 * .pi * (opening ? 3 : 2.5))

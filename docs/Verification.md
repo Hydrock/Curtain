@@ -48,3 +48,11 @@ macOS 27.0.1, Apple Silicon, Swift 6.4; целевая система macOS 14+.
   smooth settling after switch-off and no unwanted sound events.
 - Integration tests cover the wind slider callback and English/Russian labels.
 - Wind defaults to off; enabled strength starts at 35%.
+
+## v1.2.1 stronger maximum wind
+
+- Nonlinear strength curve keeps low settings gentle, with broad gusts at 100%.
+- Added faster flutter only as strength increases.
+- 800×500 simulation measured 1.8pt hem range at 20% and 88.9pt at 100%.
+- All six test groups and headless subset pass, including bounded maximum force,
+  pinned rings, hand control, release and settling after disabling wind.

@@ -18,7 +18,7 @@ check(settings.effectiveStrength == 0, "disabled wind applies no force")
 let still = Cloth(width:800,height:500,right:false)
 let weak = Cloth(width:800,height:500,right:false)
 let strong = Cloth(width:800,height:500,right:false)
-weak.windStrength = 0.2; strong.windStrength = 0.8
+weak.windStrength = 0.2; strong.windStrength = 1.0
 var weakMin = CGFloat.infinity, weakMax = -CGFloat.infinity
 var strongMin = CGFloat.infinity, strongMax = -CGFloat.infinity
 var soundEvents = 0
@@ -31,7 +31,9 @@ for _ in 0..<900 {
 check(abs(still.points.last!.x-409.6)<0.001, "disabled wind keeps a settled curtain still")
 check(weakMax-weakMin>0.5, "light wind moves the hem")
 check(strongMax-strongMin>(weakMax-weakMin)*2, "increasing strength visibly increases motion")
-check(strongMax-strongMin<25, "even strong breeze remains subtle")
+print("Wind hem travel: gentle \(String(format: "%.1f", Double(weakMax-weakMin))) pt; maximum \(String(format: "%.1f", Double(strongMax-strongMin))) pt")
+check(strongMax-strongMin>40, "100 percent produces strong visible gusts")
+check(strongMax-strongMin<200, "maximum gusts remain bounded")
 for c in 0...strong.columns { check(strong.points[c] == still.points[c], "wind never moves pinned rail rings") }
 check(soundEvents == 0, "wind does not trigger opening and closing sounds")
 strong.grab(index:200,at:CGPoint(x:200,y:260))
@@ -45,4 +47,4 @@ for _ in 0..<1200 { strong.step() }
 check(abs(strong.points.last!.x-still.points.last!.x)<0.01, "switching off lets fabric settle naturally")
 strong.windStrength = .nan
 check(strong.windStrength == 0, "invalid force is rejected")
-print("PASS: wind preferences, strength, subtle motion, fixed rings, dragging, sound isolation, stability and settling")
+print("PASS: wind preferences, strength, gentle breeze and strong gusts, fixed rings, dragging, sound isolation, stability and settling")

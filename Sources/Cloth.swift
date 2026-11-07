@@ -59,6 +59,8 @@ final class Cloth {
         for _ in 0..<2 {
             windTime += 1.0 / 120
             windGain += (windStrength - windGain) * 0.0125
+            // Keep the lower end delicate, then build rapidly toward strong gusts.
+            let windAmplitude = windGain * (1 + 8 * pow(windGain, 4))
             let old = points
             let phase: CGFloat = right ? 0.65 : 0
             for r in 0...rows {
@@ -66,8 +68,9 @@ final class Cloth {
                 // Slow, non-repeating-feeling gusts grow toward the free hem.
                 // Fade force in/out so the switch and slider never jerk the fabric.
                 let breeze = windGain > 0.000001
-                    ? windGain * v * v * (sin(windTime * 1.15 - v * 2.2 + phase)
-                        + 0.3 * sin(windTime * 0.57 - v * 4 + phase)) : 0
+                    ? windAmplitude * v * v * (sin(windTime * 1.15 - v * 2.2 + phase)
+                        + 0.3 * sin(windTime * 0.57 - v * 4 + phase)
+                        + 0.2 * windGain * windGain * sin(windTime * 3.2 - v * 6.5 + phase)) : 0
                 for c in 0...columns {
                     let i = r * (columns + 1) + c, target = rest(c, r)
                     if r == 0 { points[i] = target; velocity[i] = .zero; continue }

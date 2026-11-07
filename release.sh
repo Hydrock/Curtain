@@ -20,7 +20,7 @@ ditto -c -k --sequesterRsrc --keepParent build/Curtain.app "build/releases/$rele
 cat > build/releases/RELEASE-NOTES.md <<NOTES
 Native curtains for macOS windows, with cloth physics, wind, transparency and sound controls.
 
-New: enable Wind and adjust Wind strength for a gentle, smoothly changing breeze.
+New: enable Wind and adjust Wind strength from a gentle breeze to strong gusts at 100%.
 The setting is saved and works with all attached windows.
 
 - Requires macOS 14 or later. Universal app: Apple Silicon and Intel.

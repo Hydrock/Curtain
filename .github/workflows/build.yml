@@ -1,0 +1,19 @@
+name: macOS build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build app bundle
+        run: ./build.sh
+      - name: Verify app signature
+        run: codesign --verify --deep --strict build/Curtain.app

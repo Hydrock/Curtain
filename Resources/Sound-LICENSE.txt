@@ -1,0 +1,8 @@
+CurtainOpen.wav and CurtainClose.wav are derived from the user-supplied file:
+freesound_community-shower-curtain-fast-105401.mp3
+Processed locally: high/low-pass filtering, compression, slight slowdown,
+fade-in/fade-out, loudness normalization, then amplitude reduced to 35% of the first processed soft variant
+(50% followed by a further 30% reduction).
+Source supplied by user; original distribution rights were not independently verified.
+Further processing: removed silent/near-silent sections, including leading,
+trailing and internal gaps; added 5ms/8ms edge fades. No additional gain.
